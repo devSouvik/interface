@@ -4,6 +4,8 @@ import ComponentsDrawer from "@/components/componentsDrawer/ComponentsDrawer";
 import DesignerSection from "@/components/designerSection/DesignerSection";
 import Navbar from "@/components/navbar/Navbar";
 import PropertiesDrawer from "@/components/propertiesDrawer/PropertiesDrawer";
+import { DndContext, closestCenter, closestCorners } from "@dnd-kit/core";
+import { arrayMove } from "@dnd-kit/sortable";
 import { useState } from "react";
 
 export default function Home() {
@@ -25,6 +27,22 @@ export default function Home() {
         },
     ]);
 
+    function getComponentsPos(id: any) {
+        return components.findIndex((component) => component.id === id);
+    }
+
+    function handleDragEnd(event: { active: any; over: any }) {
+        const { active, over } = event;
+        if (active.id === over.id) return; // checks if the original position is same as new position
+
+        setComponents((compos): any => {
+            const originalPos = getComponentsPos(active.id);
+            const newPos = getComponentsPos(over.id);
+
+            return arrayMove(compos, originalPos, newPos);
+        });
+    }
+
     return (
         <>
             <Navbar />
@@ -33,7 +51,12 @@ export default function Home() {
                     components={components}
                     setComponents={setComponents}
                 />
-                <DesignerSection components={components} />
+                <DndContext
+                    onDragEnd={handleDragEnd}
+                    collisionDetection={closestCorners}
+                >
+                    <DesignerSection components={components} />
+                </DndContext>
                 <PropertiesDrawer />
             </div>
         </>

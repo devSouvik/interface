@@ -3,17 +3,17 @@
 import React, { useState } from "react";
 import { CgAdd } from "react-icons/cg";
 
-// interface componentType {
-//     id: number | string;
-//     type: "button";
-//     buttonName: string;
-// }
+interface componentType {
+    id: string | number;
+    type: string;
+    buttonName: string;
+}
 
 const ComponentsDrawer = ({
     components,
     setComponents,
 }: {
-    components: any[];
+    components: componentType[];
     setComponents: any;
 }) => {
     let count = components.length;
